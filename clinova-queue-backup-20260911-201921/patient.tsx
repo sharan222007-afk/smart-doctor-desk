@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import {
-
+  getDoctorById,
   getPatientById,
   getPatients,
   setActivePatient,
@@ -399,7 +399,10 @@ function PatientPortal() {
             <div className="mt-7 space-y-3">
               <Row label="Patient" value={patient.name} />
               <Row label="Patient ID" value={patient.id} />
-<Row label="OPD Queue" value="Common queue - doctor selected by severity and urgency" />
+              <Row
+                label="Assigned Doctor"
+                value={getDoctorById(patient.assignedDoctorId)?.name ?? patient.assignedDoctorId}
+              />
               <Row label="Current complaint" value={patient.currentComplaint || "Not provided"} />
               <Row label="Previous reports" value={`${patient.documents.length} document(s) available`} />
             </div>
@@ -414,33 +417,17 @@ function PatientPortal() {
               <span className="text-sm">I confirm that this information is correct.</span>
             </label>
 
-           <button
-                 type="button"
-                 disabled={!confirmed}
-                 onClick={() => {
-                    if (!patient || !confirmed) return;
-
-                    updatePatient(patient.id, {
-                       verification: "verified",
-                       historyCompleted: true,
-                       visitStatus: "ready-for-doctor",
-                     });
-
-                   // End this patient session and return to the login screen.
-                   setLoggedIn(false);
-                   setPatientId("");
-                   setMobile("");
-                   setOtp("");
-                   setDemoOtp("");
-                   setOtpSent(false);
-                   setConfirmed(false);
-                   setAnswer("");
-                   setScreen("home");
-                 }}
-            className="mt-6 w-full rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-        >
-            Confirm & Submit
-           </button>
+            <button
+              type="button"
+              disabled={!confirmed}
+              onClick={() => {
+                markPatientReadyForDoctor(patient.id);
+                setScreen("home");
+              }}
+              className="mt-6 w-full rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+            >
+              Confirm & Submit
+            </button>
           </section>
         </div>
       </Shell>
@@ -768,6 +755,4 @@ function Row({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
-
 

@@ -68,16 +68,7 @@ function DoctorDashboard() {
   const store = useMemo(() => getPatients(), [tick]);
   const activeDoctorId = useMemo(() => getStore().activeDoctorId, [tick]);
   const doctor = (activeDoctorId ? getDoctorById(activeDoctorId) : undefined) ?? demoDoctor;
-  const severityRank: Record<string, number> = { high: 0, moderate: 1, routine: 2 };
-  const queuePatients = [...store]
-    .filter((patient) => patient.visitStatus !== "completed")
-    .sort((a, b) => {
-      const severity = (severityRank[a.triage] ?? 9) - (severityRank[b.triage] ?? 9);
-      if (severity !== 0) return severity;
-      const aTime = a.lastUpdatedAt ? Date.parse(a.lastUpdatedAt) : 0;
-      const bTime = b.lastUpdatedAt ? Date.parse(b.lastUpdatedAt) : 0;
-      return bTime - aTime;
-    });
+  const queuePatients = store.filter((patient) => patient.assignedDoctorId === doctor.id);
   const fallbackPatient = queuePatients[0] ?? store[0];
   const patient = queuePatients.find((p) => p.id === selectedId) ?? fallbackPatient;
 
@@ -118,7 +109,7 @@ function DoctorDashboard() {
       <div className="flex min-h-screen items-center justify-center bg-background p-6">
         <div className="max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
           <h1 className="text-xl font-semibold">No patient is assigned to this doctor</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Register a patient in the Staff Portal. All waiting patients appear in the common OPD queue.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Register a patient in the Staff Portal and assign them to {doctor.name}.</p>
         </div>
       </div>
     );
@@ -209,5 +200,4 @@ function DoctorDashboard() {
     </div>
   );
 }
-
 

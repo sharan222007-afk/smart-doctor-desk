@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { FilePlus2, Search, UserPlus, UserRound } from "lucide-react";
 import { useMemo, useState } from "react";
 import { StaffLayout } from "@/components/portal/StaffLayout";
@@ -29,8 +29,7 @@ function PatientManagement() {
 }
 
 function PatientRow({patient}:{patient:ClinovaPatient}){
-  return <div className="p-6"><div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><div className="flex items-start gap-4"><div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary"><UserRound className="h-5 w-5"/></div><div><h3 className="font-semibold">{patient.name}</h3><p className="mt-1 text-sm text-muted-foreground">{patient.age} â€¢ {patient.gender} â€¢ {patient.language}</p><div className="mt-2 flex flex-wrap gap-4 text-xs text-muted-foreground"><b className="text-foreground">{patient.id}</b><span>OPD Queue â€¢ {patient.visitStatus === "in-consultation" ? "In consultation" : "Waiting"}</span><span>{patient.historyCompleted?"History completed":"History pending"}</span></div></div></div><Link to="/staff/digitize" className="inline-flex w-fit items-center gap-2 rounded-lg border border-input px-4 py-2 text-sm font-medium hover:bg-muted"><FilePlus2 className="h-4 w-4"/> Digitize</Link></div></div>
+  return <div className="p-6"><div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"><div className="flex items-start gap-4"><div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary"><UserRound className="h-5 w-5"/></div><div><h3 className="font-semibold">{patient.name}</h3><p className="mt-1 text-sm text-muted-foreground">{patient.age} • {patient.gender} • {patient.language}</p><div className="mt-2 flex flex-wrap gap-4 text-xs text-muted-foreground"><b className="text-foreground">{patient.id}</b><span>Doctor: {patient.assignedDoctorId}</span><span>{patient.historyCompleted?"History completed":"History pending"}</span></div></div></div><Link to="/staff/digitize" className="inline-flex w-fit items-center gap-2 rounded-lg border border-input px-4 py-2 text-sm font-medium hover:bg-muted"><FilePlus2 className="h-4 w-4"/> Digitize</Link></div></div>
 }
 
 function Field({label,error,children}:{label:string;error?:string;children:React.ReactNode}){return <div><label className="mb-2 block text-sm font-medium">{label}</label>{children}{error&&<p className="mt-1.5 text-xs text-destructive">{error}</p>}</div>}
-

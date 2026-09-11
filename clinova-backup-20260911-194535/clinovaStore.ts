@@ -1,4 +1,4 @@
-﻿import type { Patient, Doctor } from "@/types/clinical";
+import type { Patient, Doctor } from "@/types/clinical";
 
 export type StaffRole =
   | "Reception"
@@ -7,13 +7,6 @@ export type StaffRole =
   | "Digitization Operator"
   | "Nurse"
   | "Administrator";
-
-export type VisitStatus =
-  | "registered"
-  | "pre-consultation"
-  | "ready-for-doctor"
-  | "in-consultation"
-  | "completed";
 
 export interface HealthCentre {
   id: string;
@@ -47,7 +40,7 @@ export interface StaffMember {
 export interface ClinovaPatient extends Patient {
   mobile: string;
   healthCentreId: string;
-  assignedDoctorId?: string;
+  assignedDoctorId: string;
   currentComplaint: string;
   history: string;
   allergies: string;
@@ -56,8 +49,6 @@ export interface ClinovaPatient extends Patient {
   verification: "pending" | "verified";
   historyCompleted: boolean;
   documents: string[];
-  visitStatus?: VisitStatus;
-  lastUpdatedAt?: string;
 }
 
 const STORAGE_KEY = "clinova-v1";
@@ -162,7 +153,6 @@ const seed: ClinovaStore = {
       verification: "pending",
       historyCompleted: true,
       documents: ["Previous_Lab_Report.pdf"],
-      visitStatus: "ready-for-doctor",
     },
     {
       id: "PAT-GJ-00002",
@@ -301,8 +291,6 @@ export function createPatient(input: Omit<ClinovaPatient, "id" | "healthCentreId
     ...input,
     id: nextId("PAT-GJ", store.patients.map((item) => item.id)),
     healthCentreId: store.healthCentre.id,
-    visitStatus: input.visitStatus ?? "registered",
-    lastUpdatedAt: new Date().toISOString(),
   };
   write({ ...store, patients: [...store.patients, patient] });
   return patient;
@@ -313,27 +301,9 @@ export function updatePatient(id: string, patch: Partial<ClinovaPatient>) {
   write({
     ...store,
     patients: store.patients.map((patient) =>
-      patient.id === id
-        ? { ...patient, ...patch, lastUpdatedAt: new Date().toISOString() }
-        : patient,
+      patient.id === id ? { ...patient, ...patch } : patient,
     ),
   });
-}
-
-export function markPatientReadyForDoctor(id: string) {
-  updatePatient(id, {
-    visitStatus: "ready-for-doctor",
-    verification: "verified",
-    historyCompleted: true,
-  });
-}
-
-export function startConsultation(id: string) {
-  updatePatient(id, { visitStatus: "in-consultation" });
-}
-
-export function completeConsultation(id: string) {
-  updatePatient(id, { visitStatus: "completed" });
 }
 
 export function setActiveDoctor(id: string | null) {
@@ -345,5 +315,3 @@ export function setActivePatient(id: string | null) {
   const store = read();
   write({ ...store, activePatientId: id });
 }
-
-

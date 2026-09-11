@@ -5,10 +5,11 @@
 export type TriageLevel = "routine" | "moderate" | "high";
 
 export type QueueAssignment =
+  | { kind: "unassigned" }
   | { kind: "active"; doctorName: string }
   | { kind: "locked"; doctorName: string; note?: string }
   | { kind: "assigned"; doctorName: string };
-
+  
 export interface Doctor {
   id: string;
   name: string;

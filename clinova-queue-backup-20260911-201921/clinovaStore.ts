@@ -47,7 +47,7 @@ export interface StaffMember {
 export interface ClinovaPatient extends Patient {
   mobile: string;
   healthCentreId: string;
-  assignedDoctorId?: string;
+  assignedDoctorId: string;
   currentComplaint: string;
   history: string;
   allergies: string;
@@ -345,5 +345,4 @@ export function setActivePatient(id: string | null) {
   const store = read();
   write({ ...store, activePatientId: id });
 }
-
 
