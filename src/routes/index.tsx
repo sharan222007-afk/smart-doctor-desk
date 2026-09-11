@@ -85,7 +85,7 @@ function DoctorDashboard() {
   const [summaryOverride, setSummaryOverride] = useState<ClinicalSummary | null>(null);
 
   const patient = useMemo(
-    () => demoPatients.find((p) => p.id === selectedId) ?? demoPatients[0],
+    () => demoPatients.find((p) => p.id === selectedId) ?? fallbackPatient,
     [selectedId],
   );
 
