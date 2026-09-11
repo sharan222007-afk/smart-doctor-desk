@@ -10,33 +10,193 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DoctorRouteImport } from './routes/doctor'
+import { Route as PatientRouteImport } from './routes/patient'
+import { Route as PatientIntakeRouteImport } from './routes/patient-intake'
+import { Route as StaffRouteImport } from './routes/staff'
+import { Route as DoctorProfileRouteImport } from './routes/doctor.profile'
+import { Route as StaffIndexRouteImport } from './routes/staff.index'
+import { Route as StaffDigitizeRouteImport } from './routes/staff.digitize'
+import { Route as StaffDoctorsRouteImport } from './routes/staff.doctors'
+import { Route as StaffHealthCentreRouteImport } from './routes/staff.health-centre'
+import { Route as StaffPatientsRouteImport } from './routes/staff.patients'
+import { Route as StaffStaffRouteImport } from './routes/staff.staff'
+import { Route as StaffPatientsIndexRouteImport } from './routes/staff.patients.index'
+import { Route as StaffPatientsRegisterRouteImport } from './routes/staff.patients.register'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DoctorRoute = DoctorRouteImport.update({
+  id: '/doctor',
+  path: '/doctor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatientRoute = PatientRouteImport.update({
+  id: '/patient',
+  path: '/patient',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatientIntakeRoute = PatientIntakeRouteImport.update({
+  id: '/patient-intake',
+  path: '/patient-intake',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StaffRoute = StaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DoctorProfileRoute = DoctorProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const StaffIndexRoute = StaffIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffDigitizeRoute = StaffDigitizeRouteImport.update({
+  id: '/digitize',
+  path: '/digitize',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffDoctorsRoute = StaffDoctorsRouteImport.update({
+  id: '/doctors',
+  path: '/doctors',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffHealthCentreRoute = StaffHealthCentreRouteImport.update({
+  id: '/health-centre',
+  path: '/health-centre',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffPatientsRoute = StaffPatientsRouteImport.update({
+  id: '/patients',
+  path: '/patients',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffStaffRoute = StaffStaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffPatientsIndexRoute = StaffPatientsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => StaffPatientsRoute,
+} as any)
+const StaffPatientsRegisterRoute = StaffPatientsRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => StaffPatientsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/doctor': typeof DoctorRouteWithChildren
+  '/patient': typeof PatientRoute
+  '/patient-intake': typeof PatientIntakeRoute
+  '/staff': typeof StaffRouteWithChildren
+  '/doctor/profile': typeof DoctorProfileRoute
+  '/staff/digitize': typeof StaffDigitizeRoute
+  '/staff/doctors': typeof StaffDoctorsRoute
+  '/staff/health-centre': typeof StaffHealthCentreRoute
+  '/staff/patients': typeof StaffPatientsRouteWithChildren
+  '/staff/staff': typeof StaffStaffRoute
+  '/staff/': typeof StaffIndexRoute
+  '/staff/patients/register': typeof StaffPatientsRegisterRoute
+  '/staff/patients/': typeof StaffPatientsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/doctor': typeof DoctorRouteWithChildren
+  '/patient': typeof PatientRoute
+  '/patient-intake': typeof PatientIntakeRoute
+  '/doctor/profile': typeof DoctorProfileRoute
+  '/staff/digitize': typeof StaffDigitizeRoute
+  '/staff/doctors': typeof StaffDoctorsRoute
+  '/staff/health-centre': typeof StaffHealthCentreRoute
+  '/staff/staff': typeof StaffStaffRoute
+  '/staff': typeof StaffIndexRoute
+  '/staff/patients/register': typeof StaffPatientsRegisterRoute
+  '/staff/patients': typeof StaffPatientsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/doctor': typeof DoctorRouteWithChildren
+  '/patient': typeof PatientRoute
+  '/patient-intake': typeof PatientIntakeRoute
+  '/staff': typeof StaffRouteWithChildren
+  '/doctor/profile': typeof DoctorProfileRoute
+  '/staff/digitize': typeof StaffDigitizeRoute
+  '/staff/doctors': typeof StaffDoctorsRoute
+  '/staff/health-centre': typeof StaffHealthCentreRoute
+  '/staff/patients': typeof StaffPatientsRouteWithChildren
+  '/staff/staff': typeof StaffStaffRoute
+  '/staff/': typeof StaffIndexRoute
+  '/staff/patients/register': typeof StaffPatientsRegisterRoute
+  '/staff/patients/': typeof StaffPatientsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/doctor'
+    | '/patient'
+    | '/patient-intake'
+    | '/staff'
+    | '/doctor/profile'
+    | '/staff/digitize'
+    | '/staff/doctors'
+    | '/staff/health-centre'
+    | '/staff/patients'
+    | '/staff/staff'
+    | '/staff/'
+    | '/staff/patients/register'
+    | '/staff/patients/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/doctor'
+    | '/patient'
+    | '/patient-intake'
+    | '/doctor/profile'
+    | '/staff/digitize'
+    | '/staff/doctors'
+    | '/staff/health-centre'
+    | '/staff/staff'
+    | '/staff'
+    | '/staff/patients/register'
+    | '/staff/patients'
+  id:
+    | '__root__'
+    | '/'
+    | '/doctor'
+    | '/patient'
+    | '/patient-intake'
+    | '/staff'
+    | '/doctor/profile'
+    | '/staff/digitize'
+    | '/staff/doctors'
+    | '/staff/health-centre'
+    | '/staff/patients'
+    | '/staff/staff'
+    | '/staff/'
+    | '/staff/patients/register'
+    | '/staff/patients/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DoctorRoute: typeof DoctorRouteWithChildren
+  PatientRoute: typeof PatientRoute
+  PatientIntakeRoute: typeof PatientIntakeRoute
+  StaffRoute: typeof StaffRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +208,151 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/doctor': {
+      id: '/doctor'
+      path: '/doctor'
+      fullPath: '/doctor'
+      preLoaderRoute: typeof DoctorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patient': {
+      id: '/patient'
+      path: '/patient'
+      fullPath: '/patient'
+      preLoaderRoute: typeof PatientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patient-intake': {
+      id: '/patient-intake'
+      path: '/patient-intake'
+      fullPath: '/patient-intake'
+      preLoaderRoute: typeof PatientIntakeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/staff': {
+      id: '/staff'
+      path: '/staff'
+      fullPath: '/staff'
+      preLoaderRoute: typeof StaffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/doctor/profile': {
+      id: '/doctor/profile'
+      path: '/profile'
+      fullPath: '/doctor/profile'
+      preLoaderRoute: typeof DoctorProfileRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/staff/': {
+      id: '/staff/'
+      path: '/'
+      fullPath: '/staff/'
+      preLoaderRoute: typeof StaffIndexRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/digitize': {
+      id: '/staff/digitize'
+      path: '/digitize'
+      fullPath: '/staff/digitize'
+      preLoaderRoute: typeof StaffDigitizeRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/doctors': {
+      id: '/staff/doctors'
+      path: '/doctors'
+      fullPath: '/staff/doctors'
+      preLoaderRoute: typeof StaffDoctorsRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/health-centre': {
+      id: '/staff/health-centre'
+      path: '/health-centre'
+      fullPath: '/staff/health-centre'
+      preLoaderRoute: typeof StaffHealthCentreRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/patients': {
+      id: '/staff/patients'
+      path: '/patients'
+      fullPath: '/staff/patients'
+      preLoaderRoute: typeof StaffPatientsRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/staff': {
+      id: '/staff/staff'
+      path: '/staff'
+      fullPath: '/staff/staff'
+      preLoaderRoute: typeof StaffStaffRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/patients/': {
+      id: '/staff/patients/'
+      path: '/'
+      fullPath: '/staff/patients/'
+      preLoaderRoute: typeof StaffPatientsIndexRouteImport
+      parentRoute: typeof StaffPatientsRoute
+    }
+    '/staff/patients/register': {
+      id: '/staff/patients/register'
+      path: '/register'
+      fullPath: '/staff/patients/register'
+      preLoaderRoute: typeof StaffPatientsRegisterRouteImport
+      parentRoute: typeof StaffPatientsRoute
+    }
   }
 }
 
+interface DoctorRouteChildren {
+  DoctorProfileRoute: typeof DoctorProfileRoute
+}
+
+const DoctorRouteChildren: DoctorRouteChildren = {
+  DoctorProfileRoute: DoctorProfileRoute,
+}
+
+const DoctorRouteWithChildren =
+  DoctorRoute._addFileChildren(DoctorRouteChildren)
+
+interface StaffPatientsRouteChildren {
+  StaffPatientsRegisterRoute: typeof StaffPatientsRegisterRoute
+  StaffPatientsIndexRoute: typeof StaffPatientsIndexRoute
+}
+
+const StaffPatientsRouteChildren: StaffPatientsRouteChildren = {
+  StaffPatientsRegisterRoute: StaffPatientsRegisterRoute,
+  StaffPatientsIndexRoute: StaffPatientsIndexRoute,
+}
+
+const StaffPatientsRouteWithChildren = StaffPatientsRoute._addFileChildren(
+  StaffPatientsRouteChildren,
+)
+
+interface StaffRouteChildren {
+  StaffDigitizeRoute: typeof StaffDigitizeRoute
+  StaffDoctorsRoute: typeof StaffDoctorsRoute
+  StaffHealthCentreRoute: typeof StaffHealthCentreRoute
+  StaffPatientsRoute: typeof StaffPatientsRouteWithChildren
+  StaffStaffRoute: typeof StaffStaffRoute
+  StaffIndexRoute: typeof StaffIndexRoute
+}
+
+const StaffRouteChildren: StaffRouteChildren = {
+  StaffDigitizeRoute: StaffDigitizeRoute,
+  StaffDoctorsRoute: StaffDoctorsRoute,
+  StaffHealthCentreRoute: StaffHealthCentreRoute,
+  StaffPatientsRoute: StaffPatientsRouteWithChildren,
+  StaffStaffRoute: StaffStaffRoute,
+  StaffIndexRoute: StaffIndexRoute,
+}
+
+const StaffRouteWithChildren = StaffRoute._addFileChildren(StaffRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DoctorRoute: DoctorRouteWithChildren,
+  PatientRoute: PatientRoute,
+  PatientIntakeRoute: PatientIntakeRoute,
+  StaffRoute: StaffRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

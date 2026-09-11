@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { Header } from "@/components/dashboard/Header";
@@ -19,62 +19,37 @@ import { VoiceTranscriptModal } from "@/components/dashboard/VoiceTranscriptModa
 import { BottomActionBar } from "@/components/dashboard/BottomActionBar";
 import { PatientViewPanel } from "@/components/dashboard/PatientViewPanel";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 import {
   ayushSummary,
   ayushVerifiedRecords,
-  currentDoctor,
+  currentDoctor as demoDoctor,
   demoAIAnalysis,
   demoAlerts,
   demoAssessment,
-  demoDocuments,
   demoMissing,
-  demoPatients,
   demoSummary,
   demoTimeline,
   demoVerifiedRecords,
 } from "@/data/demo";
-import type {
-  Assessment,
-  CaseRoutingStatus,
-  ClinicalSummary,
-  DashboardMode,
-  TimelineEvent,
-} from "@/types/clinical";
+import { getDoctorById, getStore, getPatients } from "@/data/clinovaStore";
+import type { Assessment, CaseRoutingStatus, ClinicalSummary, DashboardMode, TimelineEvent, ClinicalDocument } from "@/types/clinical";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Doctor Dashboard — AI Patient Assistant" },
-      {
-        name: "description",
-        content:
-          "Clinical dashboard demo for tertiary government hospital OPD: triage queue, verified ABHA history, decision support and physician assessment.",
-      },
-      { property: "og:title", content: "Doctor Dashboard — AI Patient Assistant" },
-      {
-        property: "og:description",
-        content:
-          "Demo doctor dashboard with OPD queue, AI-extracted summary, verified records and physician assessment.",
-      },
+      { title: "Doctor Dashboard — Clinova" },
+      { name: "description", content: "Clinova physician dashboard with OPD queue, patient history, reports and clinical review." },
     ],
   }),
   component: DoctorDashboard,
 });
-const fallbackPatient = demoPatients[0]!;
 
 function DoctorDashboard() {
+  const [tick, setTick] = useState(0);
   const [mode, setMode] = useState<DashboardMode>("allopathy");
-  const [selectedId, setSelectedId] = useState(fallbackPatient.id);
-
+  const [selectedId, setSelectedId] = useState("");
   const [queueOpen, setQueueOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [transcriptOpen, setTranscriptOpen] = useState(false);
@@ -84,47 +59,70 @@ function DoctorDashboard() {
   const [routing, setRouting] = useState<CaseRoutingStatus>("awaiting-lab");
   const [summaryOverride, setSummaryOverride] = useState<ClinicalSummary | null>(null);
 
-  const patient = useMemo(
-    () => demoPatients.find((p) => p.id === selectedId) ?? fallbackPatient,
-    [selectedId],
-  );
+  useEffect(() => {
+    const refresh = () => setTick((value) => value + 1);
+    window.addEventListener("clinova-store-updated", refresh);
+    return () => window.removeEventListener("clinova-store-updated", refresh);
+  }, []);
+
+  const store = useMemo(() => getPatients(), [tick]);
+  const activeDoctorId = useMemo(() => getStore().activeDoctorId, [tick]);
+  const doctor = (activeDoctorId ? getDoctorById(activeDoctorId) : undefined) ?? demoDoctor;
+  const queuePatients = store.filter((patient) => patient.assignedDoctorId === doctor.id);
+  const fallbackPatient = queuePatients[0] ?? store[0];
+  const patient = queuePatients.find((p) => p.id === selectedId) ?? fallbackPatient;
 
   const isAyush = mode === "ayush";
   const isPatientView = mode === "patient";
-  const baseSummary = isAyush ? ayushSummary : demoSummary;
+  const baseSummary: ClinicalSummary = isAyush
+    ? ayushSummary
+    : patient
+      ? {
+          chiefComplaint: patient.currentComplaint || patient.complaint,
+          pastMedicalHistory: patient.history || "Information unavailable",
+          currentMedication: "Information unavailable",
+          allergies: patient.allergies || "Information unavailable",
+        }
+      : demoSummary;
   const summary = summaryOverride ?? baseSummary;
   const records = isAyush ? ayushVerifiedRecords : demoVerifiedRecords;
 
+  const documents: ClinicalDocument[] = (patient?.documents ?? []).map((file, index) => ({
+    id: `${patient?.id ?? "demo"}-doc-${index}`,
+    fileName: file,
+    type: "pdf",
+    note: "Patient document — prototype entry",
+  }));
+
   function handlePrimaryAction() {
     if (isPatientView) {
-      toast.info("Demo action", {
-        description: "PDF sharing is not connected. Nothing was sent to the patient.",
-      });
+      toast.info("Demo action", { description: "Patient-facing sharing is not connected yet." });
       return;
     }
-    if (isAyush) {
-      toast.info("Integration not connected — demo action", {
-        description: "NAMASTE portal upload is simulated. No data left this device.",
-      });
-      return;
-    }
-    toast.info("Integration not connected — demo action", {
-      description: "HIS / ABDM transmission is simulated. No data left this device.",
+    toast.info("Integration not connected", {
+      description: isAyush ? "NAMASTE integration is simulated." : "HIS / ABDM integration is simulated.",
     });
+  }
+
+  if (!patient) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background p-6">
+        <div className="max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
+          <h1 className="text-xl font-semibold">No patient is assigned to this doctor</h1>
+          <p className="mt-2 text-sm text-muted-foreground">Register a patient in the Staff Portal and assign them to {doctor.name}.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
-      <Header doctor={currentDoctor} onToggleQueue={() => setQueueOpen((v) => !v)} />
+      <Header doctor={doctor} onToggleQueue={() => setQueueOpen((v) => !v)} />
 
       <div className="flex min-h-0 flex-1">
-        <aside
-          className={`${
-            queueOpen ? "block" : "hidden"
-          } w-full shrink-0 border-r border-border lg:block lg:w-[300px]`}
-        >
+        <aside className={`${queueOpen ? "block" : "hidden"} w-full shrink-0 border-r border-border lg:block lg:w-[300px]`}>
           <OPDQueue
-            patients={demoPatients}
+            patients={queuePatients}
             selectedId={patient.id}
             onSelect={(p) => {
               setSelectedId(p.id);
@@ -134,20 +132,13 @@ function DoctorDashboard() {
           />
         </aside>
 
-        <main
-          className={`${queueOpen ? "hidden lg:flex" : "flex"} min-w-0 flex-1 flex-col`}
-        >
+        <main className={`${queueOpen ? "hidden lg:flex" : "flex"} min-w-0 flex-1 flex-col`}>
           <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4 lg:p-6">
             <ModeTabs
               mode={mode}
-              onChange={(m) => {
-                setMode(m);
-                setSummaryOverride(null);
-                setEditing(false);
-              }}
+              onChange={(m) => { setMode(m); setSummaryOverride(null); setEditing(false); }}
               onOpenTranscript={() => setTranscriptOpen(true)}
             />
-
             <PatientInfoCard patient={patient} />
 
             {isPatientView ? (
@@ -156,32 +147,18 @@ function DoctorDashboard() {
               <>
                 <div className="grid gap-4 xl:grid-cols-2">
                   <AIAnalysisCard analysis={demoAIAnalysis} />
-                  <MissingInformationCard
-                    items={demoMissing}
-                    onCollect={() => setStaffOpen(true)}
-                  />
+                  <MissingInformationCard items={demoMissing} onCollect={() => setStaffOpen(true)} />
                 </div>
-
                 <div className="grid gap-4 xl:grid-cols-2">
-                  <ClinicalSummaryCard
-                    summary={summary}
-                    editable={editing}
-                    onChange={setSummaryOverride}
-                  />
+                  <ClinicalSummaryCard summary={summary} editable={editing} onChange={setSummaryOverride} />
                   <DecisionSupportCard alerts={demoAlerts} />
                 </div>
-
                 <VerifiedRecordsCard records={records} />
-
-                <CurrentVisitCard
-                  complaint={summary.chiefComplaint}
-                  documents={demoDocuments}
-                />
+                <CurrentVisitCard complaint={summary.chiefComplaint} documents={documents} />
               </>
             )}
 
             <PatientTimeline events={demoTimeline} onOpen={setPastRecord} />
-
             <DoctorAssessment
               assessment={assessment}
               onChange={setAssessment}
@@ -196,15 +173,9 @@ function DoctorDashboard() {
             editing={editing}
             onToggleEdit={() => {
               setEditing((v) => !v);
-              toast.message(
-                editing ? "Editing closed" : "Editing enabled for AI-extracted fields",
-              );
+              toast.message(editing ? "Editing closed" : "Editing enabled for AI-extracted fields");
             }}
-            onVerifySave={() =>
-              toast.success("Verified & saved locally", {
-                description: "Demo only — the record was stored in this session, not sent anywhere.",
-              })
-            }
+            onVerifySave={() => toast.success("Verified & saved locally", { description: "Prototype only — no external system was contacted." })}
             onPrimaryAction={handlePrimaryAction}
           />
         </main>
@@ -218,14 +189,11 @@ function DoctorDashboard() {
           <DialogHeader>
             <DialogTitle>Staff-assisted collection</DialogTitle>
             <DialogDescription>
-              Collecting allergy, family and surgical history with front-desk staff support is a
-              planned workflow. It is not available in this demo version.
+              Missing allergy, family and surgical history can be collected through the Staff Portal. The production version will save the collected information to the patient's shared record.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setStaffOpen(false)}>
-              Close
-            </Button>
+            <Button variant="outline" onClick={() => setStaffOpen(false)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
