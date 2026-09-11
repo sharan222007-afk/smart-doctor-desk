@@ -124,13 +124,8 @@ function PatientQueueItem({
           )}
         >
           {locked ? <Lock className="size-3" /> : null}
-          {patient.assignment.kind === "active"
-            ? `Active: ${patient.assignment.doctorName}`
-            : locked
-              ? `Case Locked: ${patient.assignment.doctorName}${
-                  patient.assignment.note ? ` (${patient.assignment.note})` : ""
-                }`
-              : `Assigned: ${patient.assignment.doctorName}`}
+          {assignmentLabel(patient)}
+
         </p>
         {locked ? (
           <p className="mt-1 text-[11px] text-muted-foreground">
