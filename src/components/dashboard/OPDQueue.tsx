@@ -136,3 +136,11 @@ function PatientQueueItem({
     </li>
   );
 }
+
+function assignmentLabel(patient: Patient) {
+  const a = patient.assignment;
+  if (a.kind === "active") return `Active: ${a.doctorName}`;
+  if (a.kind === "locked")
+    return `Case Locked: ${a.doctorName}${a.note ? ` (${a.note})` : ""}`;
+  return `Assigned: ${a.doctorName}`;
+}

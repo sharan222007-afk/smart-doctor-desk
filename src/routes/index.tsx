@@ -69,10 +69,12 @@ export const Route = createFileRoute("/")({
   }),
   component: DoctorDashboard,
 });
+const fallbackPatient = demoPatients[0]!;
 
 function DoctorDashboard() {
   const [mode, setMode] = useState<DashboardMode>("allopathy");
-  const [selectedId, setSelectedId] = useState(demoPatients[0].id);
+  const [selectedId, setSelectedId] = useState(fallbackPatient.id);
+
   const [queueOpen, setQueueOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [transcriptOpen, setTranscriptOpen] = useState(false);
