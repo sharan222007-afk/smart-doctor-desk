@@ -1,4 +1,4 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowRight,
   Check,
@@ -309,7 +309,7 @@ function PatientPortal() {
 
             <div className="mt-7 rounded-xl bg-muted/40 p-5 text-lg font-medium">
               {language === "Telugu"
-                ? "à°®à±€à°•à± à°ªà±à°°à°¸à±à°¤à±à°¤à°‚ à° à°¸à°®à°¸à±à°¯ à°‰à°‚à°¦à°¿?"
+                ? "మీకు ప్రస్తుతం ఏ సమస్య ఉంది?"
                 : "What problem are you currently experiencing?"}
             </div>
 
@@ -319,7 +319,7 @@ function PatientPortal() {
               rows={5}
               placeholder={
                 language === "Telugu"
-                  ? "à°®à±€ à°¸à°®à°¾à°§à°¾à°¨à°¾à°¨à±à°¨à°¿ à°‡à°•à±à°•à°¡ à°Ÿà±ˆà°ªà± à°šà±‡à°¯à°‚à°¡à°¿..."
+                  ? "ఇక్కడ టైప్ చేయండి..."
                   : "Type your answer here..."
               }
               className="mt-5 w-full resize-none rounded-xl border border-input bg-background p-4 text-sm outline-none focus:border-primary"
@@ -459,7 +459,7 @@ function PatientPortal() {
               <div>
                 <p className="text-sm font-semibold">Clinova Patient Assistant</p>
                 <p className="text-xs text-muted-foreground">
-                  {patient.name} â€¢ {patient.language}
+                  {patient.name} • {patient.language}
                 </p>
               </div>
             </div>
@@ -473,8 +473,8 @@ function PatientPortal() {
               <div className="max-w-[85%] rounded-2xl rounded-tl-md bg-muted/60 px-5 py-4">
                 <p className="text-base leading-7">
                   {language === "Telugu"
-                    ? `à°¨à°®à°¸à±à°•à°¾à°°à°‚ ${patient.name.split(" ")[0]} ðŸ‘‹ à°ˆà°°à±‹à°œà± à°®à°¿à°®à±à°®à°²à±à°¨à°¿ à°†à°¸à±à°ªà°¤à±à°°à°¿à°•à°¿ à°¤à±€à°¸à±à°•à±à°µà°šà±à°šà°¿à°¨ à°¸à°®à°¸à±à°¯ à°à°®à°¿à°Ÿà°¿?`
-                    : `Hello ${patient.name.split(" ")[0]} ðŸ‘‹ What happened? Please tell me what brought you to the hospital today.`}
+                    ? `నమస్కారం ${patient.name.split(" ")[0]} 👋 ఈరోజు మిమ్మల్ని ఆసుపత్రికి తీసుకువచ్చిన సమస్య ఏమిటి?`
+                    : `Hello ${patient.name.split(" ")[0]} 👋 What happened? Please tell me what brought you to the hospital today.`}
                 </p>
                 <p className="mt-2 text-xs text-muted-foreground">
                   You can speak naturally. You don't need to use medical terms.
@@ -492,7 +492,7 @@ function PatientPortal() {
 
             <div className="mt-8">
               <label className="text-sm font-medium">
-                {language === "Telugu" ? "à°®à±€ à°¸à°®à°¾à°§à°¾à°¨à°‚" : "Your answer"}
+                {language === "Telugu" ? "మీ సమాధానం" : "Your answer"}
               </label>
               <textarea
                 value={answer}
@@ -501,7 +501,7 @@ function PatientPortal() {
                 autoFocus
                 placeholder={
                   language === "Telugu"
-                    ? "à°‡à°•à±à°•à°¡ à°Ÿà±ˆà°ªà± à°šà±‡à°¯à°‚à°¡à°¿..."
+                    ? "ఇక్కడ టైప్ చేయండి..."
                     : "Type what happened in your own words..."
                 }
                 className="mt-2 w-full resize-none rounded-2xl border border-input bg-background p-4 text-sm outline-none transition focus:border-primary"
@@ -629,7 +629,7 @@ function StaffAccessModal({
                   <div>
                     <p className="text-lg font-semibold">{patient.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      {patient.age} years â€¢ {patient.gender}
+                      {patient.age} years • {patient.gender}
                     </p>
                     <p className="mt-1 text-xs font-semibold text-primary">{patient.id}</p>
                   </div>
@@ -638,7 +638,7 @@ function StaffAccessModal({
                 <div className="mt-5 grid grid-cols-2 gap-3">
                   <div className="rounded-lg bg-background p-3">
                     <p className="text-[11px] text-muted-foreground">Registered mobile</p>
-                    <p className="mt-1 text-sm font-medium">+91 â€¢â€¢â€¢â€¢â€¢â€¢{patient.mobile.slice(-4)}</p>
+                    <p className="mt-1 text-sm font-medium">+91 ••••••{patient.mobile.slice(-4)}</p>
                   </div>
                   <div className="rounded-lg bg-background p-3">
                     <p className="text-[11px] text-muted-foreground">Preferred language</p>
@@ -726,7 +726,7 @@ function Back({ onClick }: { onClick: () => void }) {
       onClick={onClick}
       className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
     >
-      â† Back
+      ← Back
     </button>
   );
 }
